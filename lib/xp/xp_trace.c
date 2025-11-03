@@ -62,7 +62,8 @@ void XP_Trace1 (const char* message, ...)
 }
 
 #if defined(XP_UNIX)
-FILE *real_stderr = stderr;
+/* FILE *real_stderr = stderr; */
+FILE *real_stderr = NULL;
 #endif /* XP_UNIX */
 
 #if defined(XP_UNIX) && defined(DEBUG)

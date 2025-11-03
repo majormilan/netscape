@@ -24,8 +24,13 @@
    $Id: color.cpp,v 3.1 1998/07/27 16:09:19 hardts%netscape.com Exp $
 */
 
+#define _BSD_SOURCE
+#define _SVID_SOURCE
+
+
 
 #include "if.h"
+#include <stdlib.h>
 #ifdef STANDALONE_IMAGE_LIB
 #include "xpcompat.h"
 #else

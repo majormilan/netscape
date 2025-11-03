@@ -15,46 +15,63 @@
 # Copyright (C) 1998 Netscape Communications Corporation.  All Rights
 # Reserved.
 
-DEPTH=../..
+DEPTH = ../..
 
 include $(DEPTH)/config/config.mk
 
 CPPSRCS = \
 	RegFactory.cpp \
-	TestFactory.cpp	\
+	TestFactory.cpp \
 	$(NULL)
 
-INCLUDES=-I../src -I$(DIST)/include
+INCLUDES = -I../src -I$(DIST)/include
 
-DIRS = dynamic 
+DIRS = dynamic
 
-OBJS	= $(CPPSRCS:.cpp=.o)
+OBJS = $(CPPSRCS:.cpp=.o)
 
+# --- NSPR and support libs only ---
 EX_LIBS = \
-        $(DIST)/bin/libreg.$(DLL_SUFFIX)	\
-	$(DIST)/bin/libxpcom.$(DLL_SUFFIX)	\
-	$(DIST)/lib/libplc21.a	\
-	$(DIST)/lib/libplds21.a	\
-	$(DIST)/lib/libnspr21.a	\
+	$(DIST)/lib/libplc21.a \
+	$(DIST)/lib/libplds21.a \
+	$(DIST)/lib/libnspr21.a \
 	$(NULL)
 
-PROGS	= $(addprefix $(OBJDIR)/, $(CPPSRCS:.cpp=))
+PROGS = $(addprefix $(OBJDIR)/, $(CPPSRCS:.cpp=))
 
 NON_DIRS = $(PROGS)
 TARGETS = $(NON_DIRS)
 
 include $(DEPTH)/config/rules.mk
 
+# === COMPILE ===
 $(OBJDIR)/%.o: %.cpp
 	@$(MAKE_OBJDIR)
-	$(CCC) -o $@ $(CFLAGS) -DUSE_NSREG -c $*.cpp
+	$(CCC) -o $@ $(CFLAGS) -DUSE_NSREG -c $<
 
-$(PROGS):$(OBJDIR)/%: $(OBJDIR)/%.o $(EX_LIBS)
+# === LINK: Manually insert --start-group / --end-group ===
+$(OBJDIR)/RegFactory: $(OBJDIR)/RegFactory.o $(EX_LIBS) FORCE
 	@$(MAKE_OBJDIR)
-	$(CCC) -o $@ $@.o $(LDFLAGS) $(EX_LIBS) $(OS_LIBS)
+	$(CCC) -o $@ $< $(LDFLAGS) \
+		-Wl,--start-group \
+		$(DIST)/lib/libreg.a \
+		$(DIST)/lib/libxpcom.a \
+		-Wl,--end-group \
+		$(EX_LIBS) $(OS_LIBS)
+
+$(OBJDIR)/TestFactory: $(OBJDIR)/TestFactory.o $(EX_LIBS) FORCE
+	@$(MAKE_OBJDIR)
+	$(CCC) -o $@ $< $(LDFLAGS) \
+		-Wl,--start-group \
+		$(DIST)/lib/libreg.a \
+		$(DIST)/lib/libxpcom.a \
+		-Wl,--end-group \
+		$(EX_LIBS) $(OS_LIBS)
+
+# === Prevent infinite loop ===
+FORCE:
 
 export::
 
 install:: $(PROGS)
 	$(INSTALL) $(PROGS) $(DIST)/bin
-

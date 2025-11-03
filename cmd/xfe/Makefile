@@ -228,6 +228,7 @@ ifndef DISABLE_MARINER
 CFLAGS		+= -DENABLE_MARINER
 endif
 
+CFLAGS += -fpermissive 
 #
 # We need libnet.a in there twice because libmsg and libnet have circular
 # dependencies on functions.
@@ -530,7 +531,8 @@ endif
 
 INCLUDES	+= -Isrc -I. -I$(DEPTH)/dist/public/nls -I$(DEPTH)/dist/public/security \
 		-I$(DEPTH)/lib/libmsg -I$(DEPTH)/dist/public/ldap \
-		-I$(DEPTH)/modules/libimg/public
+		-I$(DEPTH)/modules/libimg/public \
+		-I$(DEPTH)/include
 
 
 #######################################################################

@@ -22,47 +22,35 @@ LIBRARY_NAME	= lay
 
 EXPORTS		= layout.h lo_funcs.h
 
-CSRCS = \
-	bullet.c \
-	clipline.c \
-	layarena.c \
-	layblock.c \
-	laybuiltin.c \
-	laycell.c \
-	laycols.c \
-	laydisp.c \
-	layedit.c \
-	layembed.c \
-	layfind.c \
-	layform.c \
-	layfree.c \
-	laygrid.c \
-	layhrule.c \
-	layimage.c \
-	layinfo.c \
-	layjava.c \
-	laylayer.c \
-	laylist.c \
-	laymap.c \
-	laymocha.c \
-	layobj.c \
-	layout.c \
-	layprobe.c \
-	layrelay.c \
-	layscrip.c \
-	laysel.c \
-	layspace.c \
-	layspan.c \
-	laystyle.c \
-	laysub.c \
-	laytable.c \
-	laytags.c \
-	laytext.c \
-	laytrav.c \
-	layutil.c \
-	ptinpoly.c \
-	$(NULL)
-
+CSRCS		= bullet.c \
+		  clipline.c \
+		  layarena.c \
+		  layblock.c \
+                  laybuiltin.c \
+                  laycell.c \
+		  laycols.c \
+		  laydisp.c \
+		  layembed.c \
+		  layfind.c \
+		  layform.c \
+		  laygrid.c \
+		  layhrule.c \
+		  layinfo.c \
+		  laylist.c \
+		  laymap.c \
+		  layobj.c \
+		  layscrip.c \
+		  layspace.c \
+		  layspan.c \
+		  laystyle.c \
+		  laysub.c \
+		  ptinpoly.c \
+		  laymocha.c \
+		  layjava.c \
+		  laylayer.c \
+		  layrelay.c \
+		  laytrav.c \
+                  $(NULL)
 
 REQUIRES	= parse style js layer applet nspr security dbm img util jtools edtplug java hook pref libfont lay rdf network htmldlgs
 

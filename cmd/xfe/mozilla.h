@@ -34,9 +34,9 @@
 #include <memory.h>
 #include <time.h>
 
-#if defined(__linux)
+/* #if defined(__linux)
 extern int putenv (const char *);
-#endif
+#endif */
 
 #if defined(LINUX) && defined(__GLIBC__) && (__GLIBC__ >= 2)
 #define LINUX_GLIBC_2

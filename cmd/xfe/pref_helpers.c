@@ -20,7 +20,8 @@
    Created: Dora Hsu <dora@netscape.com>, 25-Mar-96.
 */
 
-
+#include <stdlib.h>
+#undef putenv
 #include "mozilla.h"
 #include "xlate.h"
 #include "xfe.h"

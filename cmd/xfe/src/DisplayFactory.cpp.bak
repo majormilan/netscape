@@ -20,6 +20,8 @@
    Created: Spence Murray <spence@netscape.com>, 17-Sep-96.
  */
 
+
+
 #include "DisplayFactory.h"
 #include "xpassert.h"
 
@@ -36,6 +38,7 @@ static XFE_DisplayFactory *factoryRunning = NULL;
 // Internationalization stuff
 #include "xpgetstr.h"
 extern int XFE_DISPLAY_FACTORY_INSTALL_COLORMAP_ERROR;
+
 
 fe_colormap *
 XFE_DisplayFactory::getSharedColormap()
@@ -94,35 +97,30 @@ XFE_DisplayFactory::getVisual()
     if (m_visual == NULL)
       {
         Visual *v;
+        /*  String str = 0; */
         char *str = NULL;
-
-        static XtResource getVisual_res = {
-          "visualID", "VisualID",
-          XtRString, sizeof(char*),
-          0, XtRString, (XtPointer)"default"
-        };
-
-        XtGetSubresources(m_toplevel, (XtPointer)&str,
-                          (char*)fe_progname, "TopLevelShell",
-                          &getVisual_res, 1, NULL, 0);
-
-        v = fe_ParseVisual(m_screen, str);
-
-        if (str)
-          XtFree(str);
-
-        m_visual = fe_globalData.default_visual = v;
+        /* "*visualID" is special for a number of reasons... */
+        static XtResource getVisual_res = { "visualID", "VisualID",
+				  XtRString, sizeof (char*),
+				  0, XtRString, "default" };
+  
+        XtGetSubresources (m_toplevel, &str, (char *)fe_progname, "TopLevelShell",
+			   &getVisual_res, 1, 0, 0);
+        v = fe_ParseVisual (m_screen, str);
+  
+        m_visual =
+	  fe_globalData.default_visual = v;
       }
   
     /* Don't allow colormap flashing on a deep display */
-    if (m_visual != DefaultVisualOfScreen(m_screen))
+    if (m_visual != DefaultVisualOfScreen (m_screen))
       m_alwaysInstallCmap = True;
 
     if (!fe_globalData.default_colormap)
       {
-	Colormap cmap = DefaultColormapOfScreen(m_screen);
+	Colormap cmap = DefaultColormapOfScreen (m_screen);
 	fe_globalData.default_colormap =
-          fe_NewColormap(m_screen, DefaultVisualOfScreen(m_screen), cmap, False);
+          fe_NewColormap(m_screen,  DefaultVisualOfScreen(m_screen), cmap, False);
       }
   }
 
@@ -139,15 +137,16 @@ XFE_DisplayFactory::getVisualDepth()
     {
       XVisualInfo vi_in, *vi_out;
       int out_count;
-      vi_in.visualid = XVisualIDFromVisual(m_visual);
-      vi_out = XGetVisualInfo(m_display, VisualIDMask,
+      vi_in.visualid = XVisualIDFromVisual (m_visual);
+      vi_out = XGetVisualInfo (m_display, VisualIDMask,
 			       &vi_in, &out_count);
-      if (!vi_out) abort();
+      if (! vi_out) abort ();
 
-      m_visualDepth = vi_out[0].depth;
+      m_visualDepth = vi_out [0].depth;
 
-      XFree((char*)vi_out);
+      XFree ((char *) vi_out);
     }
+
 
   return m_visualDepth;
 }
@@ -194,55 +193,59 @@ XFE_DisplayFactory::XFE_DisplayFactory(Widget toplevel)
   m_screen = XtScreen(m_toplevel);
 
   {
-    char *str = NULL;
-    static XtResource res = {
-      "installColormap", XtCString, XtRString,
-      sizeof(char*), 0, XtRString, (XtPointer)"guess"
-    };
-    XtGetApplicationResources(m_toplevel, (XtPointer)&str, &res, 1, NULL, 0);
-
-    if (!str || !*str || !XP_STRCASECMP(str, "guess"))
-      {
+/*    String str = 0; */
+    char* str = NULL;
+    static XtResource res = { "installColormap", XtCString, XtRString,
+			      sizeof (char*), 0, XtRString, "guess" };
+    XtGetApplicationResources (m_toplevel, &str, &res, 1, 0, 0);
+    if (!str || !*str || !XP_STRCASECMP (str, "guess"))
 #if 0
-        /* If the server is capable of installing multiple hardware colormaps
-	   simultaniously, take one for ourself by default.  Otherwise, don't. */
-        m_alwaysInstallCmap = (MaxCmapsOfScreen(m_screen) > 1);
+      /* If the server is capable of installing multiple hardware colormaps
+	 simultaniously, take one for ourself by default.  Otherwise, don't. */
+      m_alwaysInstallCmap = (MaxCmapsOfScreen (m_screen) > 1);
 #else
-        {
-          /* But everybody lies about this value. */
-          char *vendor = XServerVendor(m_display);
-          m_alwaysInstallCmap = !strcmp(vendor, "Silicon Graphics");
-        }
+    {
+      /* But everybody lies about this value. */
+      char *vendor = XServerVendor (m_display);
+      m_alwaysInstallCmap =
+	!strcmp (vendor, "Silicon Graphics");
+    }
 #endif
-      }
-    else if (!XP_STRCASECMP(str, "yes") || !XP_STRCASECMP(str, "true"))
+    else if (!XP_STRCASECMP (str, "yes") || !XP_STRCASECMP (str, "true"))
       m_alwaysInstallCmap = True;
-    else if (!XP_STRCASECMP(str, "no") || !XP_STRCASECMP(str, "false"))
+    else if (!XP_STRCASECMP (str, "no") || !XP_STRCASECMP (str, "false"))
       m_alwaysInstallCmap = False;
     else
       {
-        fprintf(stderr,
-                XP_GetString(XFE_DISPLAY_FACTORY_INSTALL_COLORMAP_ERROR),
-                fe_progname,
-                str);
-        m_alwaysInstallCmap = False;
-      }
 
-    if (str)
-      XtFree(str);
+//    XP_GetString ( XFE_DISPLAY_FACTORY_INSTALL_COLORMAP_ERROR )
+		  
+// 		  fprintf (stderr,
+// 				   "%s: installColormap: %s must be yes, no, or guess.\n",
+// 				   fe_progname, str);
+
+ 		  fprintf(stderr,
+				  XP_GetString(XFE_DISPLAY_FACTORY_INSTALL_COLORMAP_ERROR),
+				  fe_progname,
+				  str);
+		  
+		  m_alwaysInstallCmap = False;
+      }
   }
 }
 
 XFE_DisplayFactory::~XFE_DisplayFactory()
 {
-  D(printf("in XFE_DisplayFactory::~XFE_DisplayFactory()\n");)
-  D(printf("leaving XFE_DisplayFactory::~XFE_DisplayFactory()\n");)
+D(	printf ("in XFE_DisplayFactory::~XFE_DisplayFactory()\n");)
+
+D(	printf ("leaving XFE_DisplayFactory::~XFE_DisplayFactory()\n");)
 }
 
 XFE_DisplayFactory *
 XFE_DisplayFactory::theFactory()
 {
   XP_ASSERT(factoryRunning);
+
   return factoryRunning;
 }
 
@@ -270,5 +273,5 @@ fe_DisplayFactoryColormapGoingAway(fe_colormap *colormap)
 fe_colormap * 
 fe_GetSharedColormap()
 {
-  return XFE_DisplayFactory::theFactory()->getSharedColormap();
+	return XFE_DisplayFactory::theFactory()->getSharedColormap();
 }

@@ -26,8 +26,8 @@
 #include "felocale.h"
 #include "intl_csi.h"
 
+#define EDITOR
 #include "edt.h"
-
 /* for XP_GetString() */
 #include <xpgetstr.h>
 

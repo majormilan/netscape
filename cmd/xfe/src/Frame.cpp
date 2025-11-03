@@ -144,7 +144,7 @@ extern LO_AnchorData *last_documented_anchor_data;
 // - Shared Menu Spec - These specs are defined here because they are the same
 // menu spec(definition) for each different frame type
 
-MenuSpec XFE_Frame::new_menu_spec[] = {
+/* MenuSpec XFE_Frame::new_menu_spec[] = {
   { xfeCmdOpenBrowser,		PUSHBUTTON },
   { xfeCmdComposeMessage,	PUSHBUTTON },
 #ifdef EDITOR
@@ -154,9 +154,21 @@ MenuSpec XFE_Frame::new_menu_spec[] = {
   MENU_PUSHBUTTON(xfeCmdNewWizard),
 #endif
   { NULL }
+}; */
+
+MenuSpec XFE_Frame::new_menu_spec[] = {
+  { (void*)(char*)xfeCmdOpenBrowser,      PUSHBUTTON },
+  { (void*)(char*)xfeCmdComposeMessage,   PUSHBUTTON },
+#ifdef EDITOR
+  MENU_SEPARATOR,
+  MENU_PUSHBUTTON(xfeCmdNewBlank),
+  MENU_PUSHBUTTON(xfeCmdNewTemplate),
+  MENU_PUSHBUTTON(xfeCmdNewWizard),
+#endif
+  { NULL }
 };
 
-MenuSpec XFE_Frame::bookmark_submenu_spec[] = {
+/* MenuSpec XFE_Frame::bookmark_submenu_spec[] = {
 	{ xfeCmdAddBookmark,		PUSHBUTTON },
 	{ "fileBookmarksSubmenu",     DYNA_FANCY_CASCADEBUTTON, NULL, NULL, False, (void*)True, XFE_BookmarkMenu::generate },
 	{ xfeCmdOpenBookmarks,	PUSHBUTTON },
@@ -175,6 +187,17 @@ MenuSpec XFE_Frame::tools_submenu_spec[] = {
 #endif
 	{ xfeCmdJavaConsole,		PUSHBUTTON },
 	{ NULL }
+}; */
+
+MenuSpec XFE_Frame::bookmark_submenu_spec[] = {
+	{ (void*)(char*) xfeCmdAddBookmark,		PUSHBUTTON },
+	{ (void*)(char*) "fileBookmarksSubmenu",     DYNA_FANCY_CASCADEBUTTON, NULL, NULL, False, (void*)True, XFE_BookmarkMenu::generate },
+	{ (void*)(char*) xfeCmdOpenBookmarks,	PUSHBUTTON },
+	MENU_SEPARATOR,
+	{ (void*)(char*) "placesSubmenu",            CASCADEBUTTON, XFE_Frame::places_menu_spec},
+	MENU_SEPARATOR,
+	{ (void*)(char*) "bookmarkPlaceHolder",	DYNA_MENUITEMS, NULL, NULL, False, (void*)False, XFE_BookmarkMenu::generate },
+	{ NULL }
 };
 
 MenuSpec XFE_Frame::servertools_submenu_spec[] = {
@@ -185,6 +208,16 @@ MenuSpec XFE_Frame::servertools_submenu_spec[] = {
         { xfeCmdManagePublicFolders,      PUSHBUTTON },
 	{ xfeCmdModerateDiscussion,     PUSHBUTTON }, // Newsgroup
 #endif
+	{ NULL }
+};
+
+MenuSpec XFE_Frame::tools_submenu_spec[] = {
+	{ (void*)(char*) xfeCmdOpenHistory,		PUSHBUTTON },
+	HG27632
+#ifndef MOZ_LITE
+	{ (void*)(char*) xfeCmdOpenFolders,			PUSHBUTTON },
+#endif
+	{ (void*)(char*) xfeCmdJavaConsole,		PUSHBUTTON },
 	{ NULL }
 };
 
